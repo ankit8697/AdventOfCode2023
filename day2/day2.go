@@ -2,10 +2,10 @@ package main
 
 import (
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strconv"
 	"strings"
-	"os"
-	"io/ioutil"
 )
 
 type game struct {

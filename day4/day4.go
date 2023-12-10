@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os"
-	"io/ioutil"
-	"strings"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -38,11 +38,11 @@ func part2() {
 			if err != nil {
 				fmt.Println("Card number is not a number")
 			}
-			for i := cardNumberInt + 1; i <= cardNumberInt + wins; i++ {
+			for i := cardNumberInt + 1; i <= cardNumberInt+wins; i++ {
 				cardCopies[strconv.Itoa(i)]++
 			}
 		}
-		
+
 	}
 	totalCopies := 0
 	for _, value := range cardCopies {
@@ -67,44 +67,44 @@ func getCards() []string {
 
 func getPointsForCard(card string) int {
 	splitCard := strings.Split(card, ":")
-		splitNumbers := strings.Split(splitCard[1], "|")
-		winningNumbers := strings.Split(splitNumbers[0], " ")
-		yourNumbers := strings.Split(splitNumbers[1], " ")
-		winningSet := make(map[string]bool)
-		for _, number := range winningNumbers {
-			winningSet[number] = true
-		}
-		delete(winningSet, "")
-		isFirstMatch := true
-		points := 0
-		for _, number := range yourNumbers {
-			if _, ok := winningSet[number]; ok {
-				if isFirstMatch {
-					points = 1
-					isFirstMatch = false
-				} else {
-					points *= 2
-				}
+	splitNumbers := strings.Split(splitCard[1], "|")
+	winningNumbers := strings.Split(splitNumbers[0], " ")
+	yourNumbers := strings.Split(splitNumbers[1], " ")
+	winningSet := make(map[string]bool)
+	for _, number := range winningNumbers {
+		winningSet[number] = true
+	}
+	delete(winningSet, "")
+	isFirstMatch := true
+	points := 0
+	for _, number := range yourNumbers {
+		if _, ok := winningSet[number]; ok {
+			if isFirstMatch {
+				points = 1
+				isFirstMatch = false
+			} else {
+				points *= 2
 			}
 		}
-		return points
+	}
+	return points
 }
 
 func getNumWinsForCard(card string) int {
 	splitCard := strings.Split(card, ":")
-		splitNumbers := strings.Split(splitCard[1], "|")
-		winningNumbers := strings.Split(splitNumbers[0], " ")
-		yourNumbers := strings.Split(splitNumbers[1], " ")
-		winningSet := make(map[string]bool)
-		for _, number := range winningNumbers {
-			winningSet[number] = true
+	splitNumbers := strings.Split(splitCard[1], "|")
+	winningNumbers := strings.Split(splitNumbers[0], " ")
+	yourNumbers := strings.Split(splitNumbers[1], " ")
+	winningSet := make(map[string]bool)
+	for _, number := range winningNumbers {
+		winningSet[number] = true
+	}
+	delete(winningSet, "")
+	wins := 0
+	for _, number := range yourNumbers {
+		if _, ok := winningSet[number]; ok {
+			wins++
 		}
-		delete(winningSet, "")
-		wins := 0
-		for _, number := range yourNumbers {
-			if _, ok := winningSet[number]; ok {
-				wins++
-			}
-		}
-		return wins
+	}
+	return wins
 }

@@ -1,14 +1,14 @@
 package main
 
 import (
-	"os"
-	"io/ioutil"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strings"
 )
 
 type node struct {
-	left string
+	left  string
 	right string
 }
 
@@ -45,7 +45,7 @@ func traversePath(graph map[string]node, instructions string, start string) int 
 		if currentPosition[2] == 'Z' {
 			break
 		}
-		turn := instructions[i % len(instructions)]
+		turn := instructions[i%len(instructions)]
 		if turn == 'L' {
 			currentPosition = graph[currentPosition].left
 		} else if turn == 'R' {
@@ -64,7 +64,7 @@ func part1() {
 		if currentPosition == "ZZZ" {
 			break
 		}
-		turn := instructions[i % len(instructions)]
+		turn := instructions[i%len(instructions)]
 		if turn == 'L' {
 			currentPosition = graph[currentPosition].left
 		} else if turn == 'R' {
@@ -100,12 +100,12 @@ func createGraphAndInstructions() (map[string]node, string) {
 }
 
 func gcd(a, b int) int {
-    if b == 0 {
-        return a
-    }
-    return gcd(b, a%b)
+	if b == 0 {
+		return a
+	}
+	return gcd(b, a%b)
 }
 
 func lcm(a, b int) int {
-    return (a * b) / gcd(a, b)
+	return (a * b) / gcd(a, b)
 }

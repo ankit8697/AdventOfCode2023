@@ -1,11 +1,11 @@
 package main
 
 import (
-	"os"
-	"io/ioutil"
-	"strings"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strconv"
+	"strings"
 )
 
 func main() {
@@ -37,7 +37,7 @@ func main() {
 	}
 	wins := 0
 	for chargeTime := 0; chargeTime <= time; chargeTime++ {
-		distanceTravelled := (time - chargeTime)*chargeTime
+		distanceTravelled := (time - chargeTime) * chargeTime
 		if distanceTravelled > distance {
 			wins++
 		}
@@ -78,7 +78,7 @@ func part1() {
 		distance := distances[i]
 		wins := 0
 		for chargeTime := 0; chargeTime <= time; chargeTime++ {
-			distanceTravelled := (time - chargeTime)*chargeTime
+			distanceTravelled := (time - chargeTime) * chargeTime
 			if distanceTravelled > distance {
 				wins++
 			}

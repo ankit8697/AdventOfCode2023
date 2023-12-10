@@ -1,12 +1,12 @@
 package main
 
 import (
-	"os"
-	"io/ioutil"
-	"strings"
-	"strconv"
-	"log"
 	"fmt"
+	"io/ioutil"
+	"log"
+	"os"
+	"strconv"
+	"strings"
 )
 
 func main() {
@@ -17,7 +17,7 @@ func main() {
 func part1() {
 	sequences := getSequences()
 	total := 0
-	for _, sequence :=  range sequences {
+	for _, sequence := range sequences {
 		total += computeNextValue(sequence)
 	}
 	fmt.Println(total)
@@ -26,10 +26,10 @@ func part1() {
 func part2() {
 	sequences := getSequences()
 	total := 0
-	for _, sequence :=  range sequences {
+	for _, sequence := range sequences {
 		total += computePreviousValue(sequence)
 	}
-	fmt.Println(total) 
+	fmt.Println(total)
 }
 
 func getSequences() [][]int {
@@ -68,7 +68,7 @@ func computeNextValue(sequence []int) int {
 		diffs = append(diffs, sequence[i+1]-sequence[i])
 	}
 	nextVal := computeNextValue(diffs)
-	return sequence[len(sequence)-1]+nextVal
+	return sequence[len(sequence)-1] + nextVal
 }
 
 func computePreviousValue(sequence []int) int {
@@ -80,14 +80,13 @@ func computePreviousValue(sequence []int) int {
 		diffs = append(diffs, sequence[i+1]-sequence[i])
 	}
 	prevVal := computePreviousValue(diffs)
-	return sequence[0]-prevVal
+	return sequence[0] - prevVal
 }
 
 func sum(array []int) int {
-    result := 0
-    for _,
-    v := range array {
-        result += v
-    }
-    return result
+	result := 0
+	for _, v := range array {
+		result += v
+	}
+	return result
 }

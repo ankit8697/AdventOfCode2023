@@ -71,7 +71,7 @@ func part1() {
 		// Check top right for symbol
 		if row != 0 && number.column != len(rows[0])-1 && isSymbol(rows[row-1][number.column+1]) {
 			if string(rows[row-1][number.column+1]) == "*" {
-				newGear := gearLocation{row: row - 1, column: number.column+1}
+				newGear := gearLocation{row: row - 1, column: number.column + 1}
 				gearLocations[newGear] = append(gearLocations[newGear], number.value)
 			}
 			total += getNumberValue(number)
@@ -80,7 +80,7 @@ func part1() {
 		// Check bottom left corner for symbol
 		if row != len(rows)-1 && startCol != 0 && isSymbol(rows[row+1][startCol-1]) {
 			if string(rows[row+1][startCol-1]) == "*" {
-				newGear := gearLocation{row: row + 1, column: startCol-1}
+				newGear := gearLocation{row: row + 1, column: startCol - 1}
 				gearLocations[newGear] = append(gearLocations[newGear], number.value)
 			}
 			total += getNumberValue(number)
@@ -89,7 +89,7 @@ func part1() {
 		// Check bottom right corner for symbol
 		if row != len(rows)-1 && number.column != len(rows[0])-1 && isSymbol(rows[row+1][number.column+1]) {
 			if string(rows[row+1][number.column+1]) == "*" {
-				newGear := gearLocation{row: row + 1, column: number.column+1}
+				newGear := gearLocation{row: row + 1, column: number.column + 1}
 				gearLocations[newGear] = append(gearLocations[newGear], number.value)
 			}
 			total += getNumberValue(number)
@@ -98,7 +98,7 @@ func part1() {
 		// Check left for symbol
 		if startCol != 0 && isSymbol(rows[row][startCol-1]) {
 			if string(rows[row][startCol-1]) == "*" {
-				newGear := gearLocation{row: row, column: startCol-1}
+				newGear := gearLocation{row: row, column: startCol - 1}
 				gearLocations[newGear] = append(gearLocations[newGear], number.value)
 			}
 			total += getNumberValue(number)
@@ -107,7 +107,7 @@ func part1() {
 		// Check right for symbol
 		if number.column != len(rows[0])-1 && isSymbol(rows[row][number.column+1]) {
 			if string(rows[row][number.column+1]) == "*" {
-				newGear := gearLocation{row: row, column: number.column+1}
+				newGear := gearLocation{row: row, column: number.column + 1}
 				gearLocations[newGear] = append(gearLocations[newGear], number.value)
 			}
 			total += getNumberValue(number)
@@ -119,7 +119,7 @@ func part1() {
 			for i := range number.value {
 				if isSymbol(rows[row-1][number.column-i]) {
 					if string(rows[row-1][number.column-i]) == "*" {
-						newGear := gearLocation{row: row - 1, column: number.column-i}
+						newGear := gearLocation{row: row - 1, column: number.column - i}
 						gearLocations[newGear] = append(gearLocations[newGear], number.value)
 					}
 					foundSymbol = true
@@ -135,7 +135,7 @@ func part1() {
 			for i := range number.value {
 				if isSymbol(rows[row+1][number.column-i]) {
 					if string(rows[row+1][number.column-i]) == "*" {
-						newGear := gearLocation{row: row + 1, column: number.column-i}
+						newGear := gearLocation{row: row + 1, column: number.column - i}
 						gearLocations[newGear] = append(gearLocations[newGear], number.value)
 					}
 					foundSymbol = true

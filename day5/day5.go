@@ -51,7 +51,7 @@ func part2(mappings []mapping, seeds []int) {
 	for i := 0; i < math.MaxInt; i++ {
 		currentSeed := mapLocationToSeed(i, mappings)
 		for _, seedRange := range seedRanges {
-			if currentSeed >= seedRange.sourceRangeStart && currentSeed < seedRange.sourceRangeStart + seedRange.rangeLength {
+			if currentSeed >= seedRange.sourceRangeStart && currentSeed < seedRange.sourceRangeStart+seedRange.rangeLength {
 				fmt.Println(i)
 				return
 			}
@@ -137,7 +137,7 @@ func mapSeeds(seed int, mappings []mapping) int {
 func mapLocationToSeed(location int, mappings []mapping) int {
 	currentValue := location
 	for i := range mappings {
-	currentMapping := mappings[len(mappings)-1-i]
+		currentMapping := mappings[len(mappings)-1-i]
 	rangeLoop:
 		for _, currentRange := range currentMapping.ranges {
 			destinationFloor := currentRange.destinationRangeStart

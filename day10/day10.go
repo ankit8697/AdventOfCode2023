@@ -1,19 +1,19 @@
 package main
 
 import (
-	"os"
-	"io/ioutil"
-	"strings"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
 )
 
 type direction string
 
 const (
-    north   direction = "coming from north"
-	south direction = "coming from south"
-	east direction = "coming from east"
-	west direction = "coming from west"
+	north   direction = "coming from north"
+	south   direction = "coming from south"
+	east    direction = "coming from east"
+	west    direction = "coming from west"
 	neutral direction = "coming from start"
 )
 
@@ -60,7 +60,7 @@ func main() {
 	for _, line := range cleanGrid {
 		fmt.Println(line)
 	}
-	fmt.Println(distance/2)
+	fmt.Println(distance / 2)
 	fmt.Println(getAreaOfNest(cleanGrid))
 }
 
@@ -96,29 +96,29 @@ func getNextMove(grid [][]string, current point, incoming direction) (point, dir
 	y := current.y
 	if grid[x][y] == "S" {
 		if y > 0 && canGoEast(grid[x][y-1]) {
-			nextPoint := point{x:x, y:y-1}
+			nextPoint := point{x: x, y: y - 1}
 			return nextPoint, east
 		} else if y < len(grid[0])-1 && canGoWest(grid[x][y+1]) {
-			nextPoint := point{x:x, y:y+1}
+			nextPoint := point{x: x, y: y + 1}
 			return nextPoint, west
 		} else if x > 0 && canGoSouth(grid[x-1][y]) {
-			nextPoint := point{x:x-1, y:y}
+			nextPoint := point{x: x - 1, y: y}
 			return nextPoint, south
 		} else if x < len(grid)-1 && canGoNorth(grid[x+1][y]) {
-			nextPoint := point{x:x+1, y:y}
+			nextPoint := point{x: x + 1, y: y}
 			return nextPoint, south
 		}
 	} else if incoming != north && x > 0 && canGoNorth(grid[x][y]) && canGoSouth(grid[x-1][y]) {
-		nextPoint := point{x:x-1, y:y}
+		nextPoint := point{x: x - 1, y: y}
 		return nextPoint, south
 	} else if incoming != south && x < len(grid)-1 && canGoSouth(grid[x][y]) && canGoNorth(grid[x+1][y]) {
-		nextPoint := point{x:x+1, y:y}
+		nextPoint := point{x: x + 1, y: y}
 		return nextPoint, north
 	} else if incoming != west && y > 0 && canGoWest(grid[x][y]) && canGoEast(grid[x][y-1]) {
-		nextPoint := point{x:x, y:y-1}
+		nextPoint := point{x: x, y: y - 1}
 		return nextPoint, east
 	} else if incoming != east && y < len(grid[0])-1 && canGoEast(grid[x][y]) && canGoWest(grid[x][y+1]) {
-		nextPoint := point{x:x, y:y+1}
+		nextPoint := point{x: x, y: y + 1}
 		return nextPoint, west
 	}
 	return point{}, neutral
@@ -163,7 +163,7 @@ func replaceStart(grid [][]string, start point) [][]string {
 		grid[x][y] = "|"
 	} else if northOpen && eastOpen {
 		grid[x][y] = "L"
-	} else if northOpen && westOpen { 
+	} else if northOpen && westOpen {
 		grid[x][y] = "J"
 	} else if southOpen && westOpen {
 		grid[x][y] = "7"
