@@ -1,16 +1,16 @@
 package main
 
 import (
-	"os"
-	"io/ioutil"
-	"strings"
 	"fmt"
+	"io/ioutil"
+	"os"
 	"strconv"
+	"strings"
 )
 
 type record struct {
 	springs string
-	manual []int
+	manual  []int
 }
 
 type cacheKey struct {
@@ -39,7 +39,7 @@ func main() {
 			}
 			manualParts = append(manualParts, part)
 		}
-		records = append(records, record{springs: items[0], manual:manualParts})
+		records = append(records, record{springs: items[0], manual: manualParts})
 	}
 	part2(records)
 }
@@ -64,16 +64,13 @@ func part2(records []record) {
 			manual = append(manual, r.manual...)
 		}
 		cache = make(map[cacheKey]int)
-		value := numPermutations(0, springs, manual, 0, 0)
-		fmt.Println(value)
-		total += value
+		total += numPermutations(0, springs, manual, 0, 0)
 	}
 	fmt.Println(total)
 }
 
-
 func numPermutations(i int, springs string, manual []int, blockIndex int, currBlockSize int) int {
-	key := cacheKey{i:i, blockIndex:blockIndex, currBlockSize:currBlockSize}
+	key := cacheKey{i: i, blockIndex: blockIndex, currBlockSize: currBlockSize}
 	if i, ok := cache[key]; ok {
 		return i
 	}
