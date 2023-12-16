@@ -1,24 +1,24 @@
 package main
 
 import (
-	"os"
-	"io/ioutil"
-	"strings"
 	"fmt"
+	"io/ioutil"
+	"os"
+	"strings"
 )
 
 type direction int
 
 const (
-	up   direction = 0
-	down   direction = 1
-	left    direction = 2
-	right    direction = 3
+	up    direction = 0
+	down  direction = 1
+	left  direction = 2
+	right direction = 3
 )
 
 type beam struct {
 	x, y int
-	d direction
+	d    direction
 }
 
 func main() {
@@ -44,10 +44,10 @@ func main() {
 	// fmt.Println(part1)
 	activations := make([]int, 0)
 	for i := range grid {
-		activations = append(activations, findEnergizedTiles(grid, beam{x:i, y:0, d:right}), findEnergizedTiles(grid, beam{x:i, y:len(grid[0])-1, d:left}))
+		activations = append(activations, findEnergizedTiles(grid, beam{x: i, y: 0, d: right}), findEnergizedTiles(grid, beam{x: i, y: len(grid[0]) - 1, d: left}))
 	}
 	for i := range grid[0] {
-		activations = append(activations, findEnergizedTiles(grid, beam{x:0, y:i, d:down}), findEnergizedTiles(grid, beam{x:len(grid)-1, y:i, d:up}))
+		activations = append(activations, findEnergizedTiles(grid, beam{x: 0, y: i, d: down}), findEnergizedTiles(grid, beam{x: len(grid) - 1, y: i, d: up}))
 	}
 	fmt.Println(max(activations))
 }
@@ -72,49 +72,49 @@ func findEnergizedTiles(grid [][]string, start beam) int {
 		counts[curr.x][curr.y]++
 		if grid[curr.x][curr.y] == "." {
 			if curr.d == up {
-				bfs = append(bfs, beam{x:curr.x-1, y:curr.y, d:curr.d})
+				bfs = append(bfs, beam{x: curr.x - 1, y: curr.y, d: curr.d})
 			} else if curr.d == down {
-				bfs = append(bfs, beam{x:curr.x+1, y:curr.y, d:curr.d})
+				bfs = append(bfs, beam{x: curr.x + 1, y: curr.y, d: curr.d})
 			} else if curr.d == left {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y-1, d:curr.d})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y - 1, d: curr.d})
 			} else if curr.d == right {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y+1, d:curr.d})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y + 1, d: curr.d})
 			}
 		} else if grid[curr.x][curr.y] == "/" {
 			if curr.d == up {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y+1, d:right})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y + 1, d: right})
 			} else if curr.d == down {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y-1, d:left})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y - 1, d: left})
 			} else if curr.d == left {
-				bfs = append(bfs, beam{x:curr.x+1, y:curr.y, d:down})
+				bfs = append(bfs, beam{x: curr.x + 1, y: curr.y, d: down})
 			} else if curr.d == right {
-				bfs = append(bfs, beam{x:curr.x-1, y:curr.y, d:up})
+				bfs = append(bfs, beam{x: curr.x - 1, y: curr.y, d: up})
 			}
 		} else if grid[curr.x][curr.y] == "\\" {
 			if curr.d == up {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y-1, d:left})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y - 1, d: left})
 			} else if curr.d == down {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y+1, d:right})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y + 1, d: right})
 			} else if curr.d == left {
-				bfs = append(bfs, beam{x:curr.x-1, y:curr.y, d:up})
+				bfs = append(bfs, beam{x: curr.x - 1, y: curr.y, d: up})
 			} else if curr.d == right {
-				bfs = append(bfs, beam{x:curr.x+1, y:curr.y, d:down})
+				bfs = append(bfs, beam{x: curr.x + 1, y: curr.y, d: down})
 			}
 		} else if grid[curr.x][curr.y] == "-" {
 			if curr.d == up || curr.d == down {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y-1, d:left}, beam{x:curr.x, y:curr.y+1, d:right})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y - 1, d: left}, beam{x: curr.x, y: curr.y + 1, d: right})
 			} else if curr.d == left {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y-1, d:curr.d})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y - 1, d: curr.d})
 			} else if curr.d == right {
-				bfs = append(bfs, beam{x:curr.x, y:curr.y+1, d:curr.d})
+				bfs = append(bfs, beam{x: curr.x, y: curr.y + 1, d: curr.d})
 			}
 		} else if grid[curr.x][curr.y] == "|" {
 			if curr.d == left || curr.d == right {
-				bfs = append(bfs, beam{x:curr.x-1, y:curr.y, d:up}, beam{x:curr.x+1, y:curr.y, d:down})
+				bfs = append(bfs, beam{x: curr.x - 1, y: curr.y, d: up}, beam{x: curr.x + 1, y: curr.y, d: down})
 			} else if curr.d == up {
-				bfs = append(bfs, beam{x:curr.x-1, y:curr.y, d:curr.d})
+				bfs = append(bfs, beam{x: curr.x - 1, y: curr.y, d: curr.d})
 			} else if curr.d == down {
-				bfs = append(bfs, beam{x:curr.x+1, y:curr.y, d:curr.d})
+				bfs = append(bfs, beam{x: curr.x + 1, y: curr.y, d: curr.d})
 			}
 		}
 		count++
