@@ -9,8 +9,6 @@ import (
 	"strings"
 )
 
-type direction string
-
 type instruction struct {
 	dir  string
 	dist int
