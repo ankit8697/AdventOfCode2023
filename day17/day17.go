@@ -1,131 +1,182 @@
 package main
 
 import (
+	"container/heap"
+	"flag"
 	"fmt"
-	"io/ioutil"
+	"log"
 	"os"
+	"slices"
 	"strings"
-	"strconv"
-	"math"
 )
 
-type direction int
-
-const (
-	up    direction = 0
-	down  direction = 1
-	left  direction = 2
-	right direction = 3
-)
-
-type point struct {
-	x, y int
+type direction struct {
+	row, col int
 }
 
-type result struct {
-	dist, steps int
-	dir direction
+var (
+	left  = direction{row: 0, col: -1}
+	right = direction{row: 0, col: 1}
+	up    = direction{row: -1, col: 0}
+	down  = direction{row: 1, col: 0}
+)
+
+var rotations = map[direction][]direction{
+	left:  {up, down},
+	right: {up, down},
+	up:    {left, right},
+	down:  {left, right},
+}
+
+var reverse = map[direction]direction{
+	left:  right,
+	right: left,
+	up:    down,
+	down:  up,
+}
+
+type state struct {
+	row   int
+	col   int
+	dir   direction
+	moves int
+}
+
+type item struct {
+	heatLoss int
+	state    state
+	index    int
+}
+
+type priorityQueue []*item
+
+func (pq priorityQueue) Len() int { return len(pq) }
+
+func (pq priorityQueue) Less(i, j int) bool {
+	return pq[i].heatLoss < pq[j].heatLoss
+}
+
+func (pq priorityQueue) Swap(i, j int) {
+	pq[i], pq[j] = pq[j], pq[i]
+	pq[i].index = i
+	pq[j].index = j
+}
+
+func (pq *priorityQueue) Push(x any) {
+	n := len(*pq)
+	item := x.(*item)
+	item.index = n
+	*pq = append(*pq, item)
+}
+
+func (pq *priorityQueue) Pop() any {
+	old := *pq
+	n := len(old)
+	item := old[n-1]
+	old[n-1] = nil
+	item.index = -1
+	*pq = old[0 : n-1]
+	return item
 }
 
 func main() {
-	file, err := os.Open("day17testinput.txt")
-	defer file.Close()
+	p1 := flag.Bool("p1", false, "run part 1")
+	p2 := flag.Bool("p2", false, "run part 2")
+	flag.Parse()
+	args := flag.Args()
+
+	if len(args) == 0 {
+		log.Fatal("no input file provided")
+	}
+
+	b, err := os.ReadFile(args[0])
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
-	contents, err := ioutil.ReadAll(file)
-	if err != nil {
-		panic(err)
+
+	input := string(b)
+
+	if *p1 {
+		fmt.Println("part 1:", part1(input))
 	}
-	lines := strings.Split(string(contents), "\n")
-	grid := make([][]int, 0)
-	for _, line := range lines {
-		row := make([]int, 0)
-		for _, c := range line {
-			v, err := strconv.Atoi(string(c))
-			if err != nil {
-				fmt.Println("item in grid is not a number")
-			}
-			row = append(row, int(v))
-		}
-		grid = append(grid, row)
+
+	if *p2 {
+		fmt.Println("part 2:", part2(input))
 	}
-	part1(grid)
 }
 
-func part1(grid [][]int) {
-	values := make([][]int, 0)
-	for _, row := range grid {
-		r := make([]int, 0)
-		for range row {
-			r = append(r, 0)
-		}
-		values = append(values, r)
+func part1(input string) int {
+	grid := parse(input)
+	return dijkstra(grid, 3, 0)
+}
+
+func part2(input string) int {
+	grid := parse(input)
+	return dijkstra(grid, 10, 4)
+}
+
+func dijkstra(grid []string, maxConsecutive, movesNeededBeforeTurn int) int {
+	m := len(grid)
+	n := len(grid[0])
+	startRight := state{row: 0, col: 0, dir: right, moves: 0}
+	startDown := state{row: 0, col: 0, dir: down, moves: 0}
+	pq := priorityQueue{
+		&item{heatLoss: 0, state: startRight, index: 0},
+		&item{heatLoss: 0, state: startDown, index: 1},
 	}
-	numNodes := len(grid)*len(grid[0])
-	visited := make(map[point]result)
-	visited[point{x:0, y:0}] = result{dist:0, steps:0, dir:right}
-	for len(visited) != numNodes {
-		fmt.Println(visited)
-		minNode := point{}
-		minNeighbour := point{}
-		minVal := math.MaxInt
-		for k, v := range visited {
-			neighbours := getNeighbours(grid, k)
-			for _, n := range neighbours {
-				if _, ok := visited[n]; ok {
+
+	minCost := map[state]int{startRight: 0, startDown: 0}
+	heap.Init(&pq)
+
+	for len(pq) > 0 {
+		curr := heap.Pop(&pq).(*item)
+		if minCost[curr.state] < curr.heatLoss {
+			continue
+		}
+
+		if curr.state.row == m-1 && curr.state.col == n-1 && curr.state.moves >= movesNeededBeforeTurn {
+			return curr.heatLoss
+		}
+
+		for _, dir := range [4]direction{left, right, up, down} {
+			if curr.state.moves == maxConsecutive && !slices.Contains(rotations[curr.state.dir], dir) || dir == reverse[curr.state.dir] {
+				continue
+			}
+
+			ni, nj := curr.state.row+dir.row, curr.state.col+dir.col
+			nextMoves := curr.state.moves
+
+			if curr.state.moves < movesNeededBeforeTurn {
+				if dir != curr.state.dir {
 					continue
 				}
-				if getDirection(k, n) == v.dir && v.steps >= 3 {
-					continue
-				}
-				if grid[n.x][n.y] + v.dist < minVal {
-					minVal = grid[n.x][n.y] + v.dist
-					minNode = k
-					minNeighbour = n
+				nextMoves++
+			} else {
+				if dir != curr.state.dir {
+					nextMoves = 1
+				} else {
+					nextMoves = nextMoves%maxConsecutive + 1
 				}
 			}
+
+			if ni < 0 || ni >= m || nj < 0 || nj >= n {
+				continue
+			}
+
+			nextState := state{row: ni, col: nj, moves: nextMoves, dir: dir}
+			nextHeatLoss := int(rune(grid[ni][nj]) - '0')
+			if _, ok := minCost[nextState]; ok && minCost[nextState] <= curr.heatLoss+nextHeatLoss {
+				continue
+			}
+
+			minCost[nextState] = curr.heatLoss + nextHeatLoss
+			heap.Push(&pq, &item{heatLoss: curr.heatLoss + nextHeatLoss, state: nextState})
 		}
-		minDir := getDirection(minNode, minNeighbour)
-		value := result{}
-		if minDir == visited[minNode].dir {
-			value = result{dist:minVal, dir:minDir, steps:visited[minNode].steps+1}
-		} else {
-			value = result{dist:minVal, dir:minDir, steps:1}
-		}
-		visited[minNeighbour] = value
-		fmt.Println(visited)
 	}
-	fmt.Println(visited[point{x:len(grid)-1, y:len(grid[0])-1}].dist)
+
+	return -1
 }
 
-func getNeighbours(grid [][]int, node point) []point {
-	neighbours := make([]point, 0)
-	x := node.x
-	y := node.y
-	if x > 0 {
-		neighbours = append(neighbours, point{x-1, y})
-	}
-	if x < len(grid)-1 {
-		neighbours = append(neighbours, point{x+1, y})
-	}
-	if y > 0 {
-		neighbours = append(neighbours, point{x, y-1})
-	}
-	if y < len(grid[0])-1 {
-		neighbours = append(neighbours, point{x, y+1})
-	}
-	return neighbours
-}
-
-// Direction of a relative to b. Only works for adjacent points
-func getDirection(a point, b point) direction {
-	if a.x > b.x {
-		return up
-	} else if a.x < b.x {
-		return down
-	} else if a.y > b.y {
-		return left
-	}
-	return right
+func parse(input string) []string {
+	return strings.Split(strings.ReplaceAll(input, "\r\n", "\n"), "\n")
 }
